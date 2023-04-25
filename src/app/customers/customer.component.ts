@@ -1,7 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl , FormGroup ,FormBuilder, Validators} from '@angular/forms';
+import { FormControl , FormGroup ,FormBuilder, Validators, AbstractControl} from '@angular/forms';
 
 import { Customer } from './customer';
+
+function ratingRange(c:AbstractControl):{[key:string]:boolean }| null{
+  if(c.value !== null && (isNaN(c.value) || c.value < 1 || c.value > 5)){
+    return {'range':true}
+  }
+  return null
+}
 
 @Component({
   selector: 'app-customer',
@@ -22,7 +29,7 @@ export class CustomerComponent implements OnInit {
       lastName:['',[Validators.required, Validators.maxLength(50)]],
       email:['',[Validators.required, Validators.email]],
       phone:'',
-      rating:'',
+      rating:[null,ratingRange],
       notification:'email',
       sendCatalog:false
     })
