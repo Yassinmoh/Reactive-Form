@@ -1,13 +1,27 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl , FormGroup ,FormBuilder, Validators, AbstractControl} from '@angular/forms';
+import { FormControl, FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 
 import { Customer } from './customer';
 
-function ratingRange(c:AbstractControl):{[key:string]:boolean }| null{
-  if(c.value !== null && (isNaN(c.value) || c.value < 1 || c.value > 5)){
-    return {'range':true}
+function ratingRange(c: AbstractControl): { [key: string]: boolean } | null {
+  if (c.value !== null && (isNaN(c.value) || c.value < 1 || c.value > 5)) {
+    return { 'range': true }
   }
   return null
+}
+
+function emailMatcher(c:AbstractControl) : {[key:string] :boolean} | null {
+  let emailController =c.get('email')
+  let emailCofirmController =c.get('confirmEmail')
+
+  if(emailCofirmController?.pristine || emailController?.pristine){
+    return null
+  }
+
+  if(emailCofirmController?.value === emailController?.value){
+    return null
+  }
+  return {'match':true}
 }
 
 @Component({
@@ -16,22 +30,27 @@ function ratingRange(c:AbstractControl):{[key:string]:boolean }| null{
   styleUrls: ['./customer.component.css']
 })
 export class CustomerComponent implements OnInit {
-  customerForm: FormGroup =new FormGroup({})
-  customer =new Customer()
+  customerForm: FormGroup = new FormGroup({})
+  customer = new Customer()
 
-  sendCatalog=new FormControl()
-  constructor(private fb:FormBuilder) { }
+  sendCatalog = new FormControl()
+  constructor(private fb: FormBuilder) { }
 
   ngOnInit(): void {
 
     this.customerForm = this.fb.group({
-      firstName:['',[Validators.required, Validators.minLength(3)]],
-      lastName:['',[Validators.required, Validators.maxLength(50)]],
-      email:['',[Validators.required, Validators.email]],
-      phone:'',
-      rating:[null,ratingRange],
-      notification:'email',
-      sendCatalog:false
+      firstName: ['', [Validators.required, Validators.minLength(3)]],
+      lastName: ['', [Validators.required, Validators.maxLength(50)]],
+
+      emailGroup: this.fb.group({
+        email: ['', [Validators.required, Validators.email]],
+        confirmEmail: ['', [Validators.required , Validators.email]],
+      },{validator:emailMatcher}),
+
+      phone: '',
+      rating: [null, ratingRange],
+      notification: 'email',
+      sendCatalog: false
     })
   }
 
@@ -40,20 +59,20 @@ export class CustomerComponent implements OnInit {
     console.log('Saved: ' + JSON.stringify(this.customerForm?.value));
   }
 
-  setData(): void{
+  setData(): void {
     this.customerForm.patchValue({
-      firstName:'yassin',
-      lastName:'mohamed',
-      email:'mohamed@gmail.com',
-      sendCatalog:true,
+      firstName: 'yassin',
+      lastName: 'mohamed',
+      email: 'mohamed@gmail.com',
+      sendCatalog: true,
     })
   }
 
-  setNotification(notifyVie:string):void{
-    let phone =this.customerForm.get('phone')
-    if(notifyVie === 'text'){
+  setNotification(notifyVie: string): void {
+    let phone = this.customerForm.get('phone')
+    if (notifyVie === 'text') {
       phone?.addValidators(Validators.required)
-    }else{
+    } else {
       phone?.clearValidators()
     }
     phone?.updateValueAndValidity()
