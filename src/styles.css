@@ -8,3 +8,7 @@ div.card-header {
 div.card {
   margin-top: 10px
 }
+
+body{
+  background-color: #ddd;
+}

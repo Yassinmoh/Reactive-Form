@@ -102,12 +102,12 @@
                   id="phoneId"
                   placeholder="phone"
                   formControlName="phone"
-                  [ngClass]="{'is-invalid':!customerForm.get('phone')?.valid }"
+                  [ngClass]="{'is-invalid':!customerForm.get('phone')?.valid && customerForm.get('phone')?.touched}"
                   type="tel"/>
 
           <span class="invalid-feedback">
-            <span *ngIf="customerForm.get('phone')?.errors?.required">
-              Please enter your phone number
+            <span *ngIf="customerForm.get('phone')?.errors?.match">
+              phone number should not less 11 num
             </span>
           </span>
         </div>
@@ -120,7 +120,7 @@
                   id="ratingId"
                   type="number"
                   formControlName="rating"
-                  [ngClass]="{'is-invalid':!customerForm.get('rating')?.touched ||
+                  [ngClass]="{'is-invalid':customerForm.get('rating')?.touched ||
                                             customerForm.get('rating')?.dirty &&
                                             !customerForm.get('rating')?.valid}"
                   />

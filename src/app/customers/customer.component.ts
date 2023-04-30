@@ -19,9 +19,16 @@ function emailMatcher(c:AbstractControl) : {[key:string] :boolean} | null {
   }
 
   if(emailCofirmController?.value === emailController?.value){
-    return null
+    return {'match':true}
   }
-  return {'match':true}
+  return null
+}
+
+function phoneMatcher(c:AbstractControl):{[key:string] :boolean}| null{
+  if((c?.value.toString().split('').length  < 11) || (isNaN(c?.value))){
+    return {'match':true}
+  }
+  return null
 }
 
 @Component({
@@ -47,7 +54,7 @@ export class CustomerComponent implements OnInit {
         confirmEmail: ['', [Validators.required , Validators.email]],
       },{validator:emailMatcher}),
 
-      phone: '',
+      phone: ['',phoneMatcher],
       rating: [null, ratingRange],
       notification: 'email',
       sendCatalog: false
