@@ -24,11 +24,13 @@ function emailMatcher(c:AbstractControl) : {[key:string] :boolean} | null {
   return null
 }
 
-function phoneMatcher(c:AbstractControl):{[key:string] :boolean}| null{
-  if((c?.value.toString().split('').length  < 11) || (isNaN(c?.value))){
-    return {'match':true}
+function phoneMatcher(c: AbstractControl): {[key: string]: boolean} | null {
+  const phone = c?.value?.toString().replace(/\D/g, ''); // remove all non-numeric characters
+  if (phone && phone.length >= 11) {
+    return null;
+  } else {
+    return { 'matchphone': true }; //<-- Error Object
   }
-  return null
 }
 
 @Component({
@@ -59,6 +61,8 @@ export class CustomerComponent implements OnInit {
       notification: 'email',
       sendCatalog: false
     })
+
+    this.customerForm.get('notification')?.valueChanges.subscribe((val)=> this.setNotification(val))
   }
 
   save(): void {
