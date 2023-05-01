@@ -5,10 +5,10 @@ div.card-header {
  font-size: large;
 }
 
-div.card {
-  margin-top: 10px
-}
-
 body{
   background-color: #ddddddcb;
+}
+
+div.card {
+  margin-top: 10px
 }

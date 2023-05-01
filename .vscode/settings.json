@@ -2,6 +2,7 @@
   "files.autoSave": "afterDelay",
   "html.format.wrapAttributes": "force-aligned",
   "conventionalCommits.scopes": [
-    "Notification"
+    "Notification",
+    "body"
   ]
 }
