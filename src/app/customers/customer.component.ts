@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
+import { FormControl, FormGroup, FormBuilder, Validators, AbstractControl, FormArray } from '@angular/forms';
 
 import { Customer } from './customer';
 
@@ -41,8 +41,11 @@ function phoneMatcher(c: AbstractControl): {[key: string]: boolean} | null {
 export class CustomerComponent implements OnInit {
   customerForm: FormGroup = new FormGroup({})
   customer = new Customer()
-
   sendCatalog = new FormControl()
+
+  get addresses():FormArray{
+    return <FormArray>this.customerForm.get('addresses')
+  }
   constructor(private fb: FormBuilder) { }
 
   ngOnInit(): void {
@@ -59,7 +62,9 @@ export class CustomerComponent implements OnInit {
       phone: ['',phoneMatcher],
       rating: [null, ratingRange],
       notification: 'email',
-      sendCatalog: false
+      sendCatalog: false,
+      addresses:this.fb.array([this.addressBuilderFun()])
+
     })
 
     this.customerForm.get('notification')?.valueChanges.subscribe((val)=> this.setNotification(val))
@@ -89,4 +94,14 @@ export class CustomerComponent implements OnInit {
     phone?.updateValueAndValidity()
   }
 
+  addressBuilderFun():FormGroup {
+    return this.fb.group({
+      addressType:'home',
+      street1:'',
+      street2:'',
+      city:'',
+      state:'',
+      zip:'',
+    })
+  }
 }
